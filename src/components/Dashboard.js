@@ -1,18 +1,37 @@
-import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { updateTaskEntries } from "../store/Actions";
+import { useState, useEffect } from "react";
 import AddCard from "./AddData";
 import { IconButton } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import EditTask from "./EditTask";
+import ViewTask from "./ViewTask";
+//import Delete from "./Delete";
+import Search from "./Search";
 import '../index.css'
 
 const Dashboard = () => {
 
+    const dispatch = useDispatch();
+    const taskEntries = useSelector((state) => state.task.entries);
+
+    useEffect(() => {
+        
+        localStorage.setItem("taskEntries", JSON.stringify(inputList));
+
+        dispatch(updateTaskEntries(inputList));
+      }, [inputList, dispatch]);
+
+
     const [showPopup, setShowPopup] = useState(false);
     const [showEditPopup, setShowEditPopup] = useState(false);
+    const [showViewPopup, setShowViewPopup] = useState(false);
+    const [viewTask, setViewTask] = useState(null);
     const [inputList, setInputList] = useState([]);
-    
+    const [filteredInputList, setFilteredInputList] = useState([]);
+    const [searchTerm, setSearchTerm] = useState("");
 
     const togglePopup = () => {
         setShowPopup(!showPopup);
@@ -22,24 +41,60 @@ const Dashboard = () => {
         setShowEditPopup(!showEditPopup);
     };
 
+    const toggleViewPopup = (task) => {
+        setShowViewPopup(!showViewPopup);
+        setViewTask(task);
+    };
 
     const handleInputListUpdate = (newInputList) => {
+        //dispatch(updateTaskEntries(newInputList));
         setInputList(newInputList);
+        setFilteredInputList(newInputList);
     };
 
     const updateTask = (updatedTask) => {
         const updatedTaskIndex = inputList.findIndex((task) => task.id === updatedTask.id);
         if (updatedTaskIndex !== -1) {
-          const updatedList = [...inputList];
-          updatedList.splice(updatedTaskIndex, 1, updatedTask);
-          setInputList(updatedList);
+            const updatedList = [...taskEntries];
+            updatedList.splice(updatedTaskIndex, 1, updatedTask);
+            setInputList(updatedList);
+            setFilteredInputList(updatedList);
         }
-      };
+    };
+
+    const handleSearch = (searchTerm) => {
+        setSearchTerm(searchTerm);
+
+        if (searchTerm.trim() === "") {
+            setFilteredInputList([]);
+            return;
+        }
+
+        const filteredList = inputList.filter(
+            (task) =>
+                task.id.includes(searchTerm) ||
+                task.title.includes(searchTerm) ||
+                task.desc.includes(searchTerm) ||
+                task.status.includes(searchTerm)
+        );
+        setFilteredInputList(filteredList);
+    };
+
+    const handleCancelSearch = () => {
+        setSearchTerm("");
+        setFilteredInputList([]);
+    };
+
+    // const deleteTask = (id) => {
+    //     const updatedList = inputList.filter((task) => task.id !== id);
+    //     setInputList(updatedList);
+    // };
 
     return (
         <>
             <div className="dashboard">
                 <h1>Dashboard</h1>
+
                 <button className="blue-button" onClick={togglePopup}>Add Task</button>
                 {showPopup && (
                     <div className="popup-overlay">
@@ -49,16 +104,22 @@ const Dashboard = () => {
                     </div>
                 )}
 
+                <Search onSearch={handleSearch} onCancel={handleCancelSearch} />
+
                 <div className="card-list">
-                    {inputList.map((item) => (
+                    {/* {console.log("inputList:", inputList)}
+                    {console.log("filteredInputList:", filteredInputList)}
+                    {(searchTerm.trim() === "" ? inputList : filteredInputList).map((item) => ( */}
+                    {Array.isArray(inputList) && (
+            (searchTerm.trim() === "" ? inputList : filteredInputList).map((item) => (
                         <div className="card" key={item.id}>
                             <h2>ID: {item.id}</h2>
                             <p>Title: {item.title}</p>
-                            <p>Description: {item.desc}</p>
                             <p>State: {item.status}</p>
-                            
+
                             <div className="button-container">
                                 <IconButton><DeleteIcon /></IconButton>
+
                                 <IconButton onClick={toggleEditPopup}><EditIcon /></IconButton>
                                 {showEditPopup && (
                                     <div className="popup-overlay">
@@ -67,10 +128,19 @@ const Dashboard = () => {
                                         </div>
                                     </div>
                                 )}
-                                <IconButton><VisibilityIcon /></IconButton>
+
+                                <IconButton task={item} onClick={() => toggleViewPopup(item)}><VisibilityIcon /></IconButton>
+                                {showViewPopup && (
+                                    <div className="popup-overlay">
+                                        <div className="popup">
+                                            <ViewTask task={viewTask} onCancel={toggleViewPopup} />
+                                        </div>
+                                    </div>
+                                )}
                             </div>
                         </div>
-                    ))}
+                    )))
+                    }
                 </div>
             </div>
         </>
