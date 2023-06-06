@@ -1,4 +1,5 @@
-import { UPDATE_TASK_ENTRIES } from "./taskActions";
+import { UPDATE_TASK_ENTRIES } from "./Actions";
+import {combineReducers} from 'redux';
 
 const initialState = {
   entries: [],
@@ -15,5 +16,11 @@ const taskReducer = (state = initialState, action) => {
       return state;
   }
 };
+
+// const rootReducer = combineReducers({
+//     task: taskReducer,
+//   });
+  
+//   export default rootReducer;
 
 export default taskReducer;
