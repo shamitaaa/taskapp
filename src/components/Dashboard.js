@@ -14,21 +14,11 @@ import '../index.css'
 
 const Dashboard = () => {
 
-    const dispatch = useDispatch();
-    const taskEntries = useSelector((state) => state.task.entries);
-
-    useEffect(() => {
-        
-        localStorage.setItem("taskEntries", JSON.stringify(inputList));
-
-        dispatch(updateTaskEntries(inputList));
-      }, [inputList, dispatch]);
-
-
     const [showPopup, setShowPopup] = useState(false);
     const [showEditPopup, setShowEditPopup] = useState(false);
     const [showViewPopup, setShowViewPopup] = useState(false);
     const [viewTask, setViewTask] = useState(null);
+    const [selectedTask, setSelectedTask] = useState(null);
     const [inputList, setInputList] = useState([]);
     const [filteredInputList, setFilteredInputList] = useState([]);
     const [searchTerm, setSearchTerm] = useState("");
@@ -37,7 +27,8 @@ const Dashboard = () => {
         setShowPopup(!showPopup);
     };
 
-    const toggleEditPopup = () => {
+    const toggleEditPopup = (task) => {
+        setSelectedTask(task);
         setShowEditPopup(!showEditPopup);
     };
 
@@ -55,7 +46,7 @@ const Dashboard = () => {
     const updateTask = (updatedTask) => {
         const updatedTaskIndex = inputList.findIndex((task) => task.id === updatedTask.id);
         if (updatedTaskIndex !== -1) {
-            const updatedList = [...taskEntries];
+            const updatedList = [...inputList];
             updatedList.splice(updatedTaskIndex, 1, updatedTask);
             setInputList(updatedList);
             setFilteredInputList(updatedList);
@@ -111,37 +102,36 @@ const Dashboard = () => {
                     {console.log("filteredInputList:", filteredInputList)}
                     {(searchTerm.trim() === "" ? inputList : filteredInputList).map((item) => ( */}
                     {Array.isArray(inputList) && (
-            (searchTerm.trim() === "" ? inputList : filteredInputList).map((item) => (
-                        <div className="card" key={item.id}>
-                            <h2>ID: {item.id}</h2>
-                            <p>Title: {item.title}</p>
-                            <p>State: {item.status}</p>
+                        (searchTerm.trim() === "" ? inputList : filteredInputList).map((item) => (
+                            <div className="card" key={item.id}>
+                                <h2>ID: {item.id}</h2>
+                                <p>Title: {item.title}</p>
+                                <p>State: {item.status}</p>
 
-                            <div className="button-container">
-                                <IconButton><DeleteIcon /></IconButton>
-
-                                <IconButton onClick={toggleEditPopup}><EditIcon /></IconButton>
-                                {showEditPopup && (
-                                    <div className="popup-overlay">
-                                        <div className="popup">
-                                            <EditTask task={item} onEdit={updateTask} onCancel={toggleEditPopup} />
-                                        </div>
-                                    </div>
-                                )}
-
-                                <IconButton task={item} onClick={() => toggleViewPopup(item)}><VisibilityIcon /></IconButton>
-                                {showViewPopup && (
-                                    <div className="popup-overlay">
-                                        <div className="popup">
-                                            <ViewTask task={viewTask} onCancel={toggleViewPopup} />
-                                        </div>
-                                    </div>
-                                )}
+                                <div className="button-container">
+                                    <IconButton><DeleteIcon /></IconButton>
+                                    <IconButton onClick={() => toggleEditPopup(item)}><EditIcon /></IconButton>
+                                    <IconButton task={item} onClick={() => toggleViewPopup(item)}><VisibilityIcon /></IconButton>
+                                </div>
                             </div>
-                        </div>
-                    )))
+                        )))
                     }
                 </div>
+
+                {showEditPopup && (
+                    <div className="popup-overlay">
+                        <div className="popup">
+                            <EditTask task={selectedTask} onEdit={updateTask} onCancel={toggleEditPopup} />
+                        </div>
+                    </div>
+                )}
+                {showViewPopup && (
+                    <div className="popup-overlay">
+                        <div className="popup">
+                            <ViewTask task={viewTask} onCancel={toggleViewPopup} />
+                        </div>
+                    </div>
+                )}
             </div>
         </>
     );

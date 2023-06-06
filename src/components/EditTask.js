@@ -2,29 +2,40 @@ import React, { useState } from 'react';
 
 const EditTask = ({ task, onEdit, onCancel }) => {
   
+  const [updatedTask, setUpdatedTask] = useState({ ...task });
   const [newTitle, setNewTitle] = useState(task?.title);
   const [newDesc, setNewDesc] = useState(task?.desc);
   const [newStatus, setNewStatus] = useState(task?.status);
 
-  const handleInputChange = event => {
-    const { name, value } = event.target;
-    if (name === 'title') {
-      setNewTitle(value);
-    } else if (name === 'desc') {
-      setNewDesc(value);
-    } else if (name === 'status') {
-      setNewStatus(value);
-    }
+  // const handleInputChange = event => {
+  //   const { name, value } = event.target;
+  //   if (name === 'title') {
+  //     setNewTitle(value);
+  //   } else if (name === 'desc') {
+  //     setNewDesc(value);
+  //   } else if (name === 'status') {
+  //     setNewStatus(value);
+  //   }
+  // };
+
+  // const saveChanges = () => {
+  //   const updatedTask = {
+  //     ...task,
+  //     title: newTitle,
+  //     desc: newDesc,
+  //     status: newStatus
+  //   };
+  //   onEdit(updatedTask);
+  // };
+
+  const handleInputChange = (e) => {
+    
+    setUpdatedTask({ ...updatedTask, [e.target.name]: e.target.value });
   };
 
-  const saveChanges = () => {
-    const updatedTask = {
-      ...task,
-      title: newTitle,
-      desc: newDesc,
-      status: newStatus
-    };
-    onEdit(updatedTask);
+  const handleSave = () => {
+    onEdit(updatedTask); 
+    onCancel(); 
   };
 
   const handleCancel = () => {
@@ -63,7 +74,7 @@ const EditTask = ({ task, onEdit, onCancel }) => {
           <option value="In QA">In QA</option>
           <option value="QA Done">QA Done</option>
         </select>
-        <button type="button" onClick={saveChanges}>
+        <button type="button" onClick={handleSave}>
           Save
         </button>
         <button type="button" onClick={handleCancel}>Cancel</button>
