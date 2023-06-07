@@ -14,6 +14,16 @@ const Dashboard = () => {
     //get inputlist or empty array and assign to initialstate variable.
     const initialState = JSON.parse(localStorage.getItem("inputList")) || [];
 
+    // const getCounterFromStorage = () => {
+    //     const counter = localStorage.getItem("counter");
+    //     return counter ? parseInt(counter) : 0;
+    //   };
+
+    //   const updateCounter = (newCounter) => {
+    //     localStorage.setItem("counter", newCounter.toString());
+    //     setCounter(newCounter);
+    //   };
+
     const [showPopup, setShowPopup] = useState(false);
     const [showEditPopup, setShowEditPopup] = useState(false);
     const [showViewPopup, setShowViewPopup] = useState(false);
@@ -22,6 +32,11 @@ const Dashboard = () => {
     const [inputList, setInputList] = useState(initialState);
     const [filteredInputList, setFilteredInputList] = useState([]);
     const [searchTerm, setSearchTerm] = useState("");
+    const [counter, setCounter] = useState(initialState.length);
+
+    const updateCounter = (value) => {
+      setCounter(value);
+    };
 
     //add task pop up
     const togglePopup = () => {
@@ -44,6 +59,10 @@ const Dashboard = () => {
     useEffect(() => {
       localStorage.setItem("inputList", JSON.stringify(inputList));
     },) 
+
+    
+
+      
 
     //used for search so that updated values will also show.
     const handleInputListUpdate = (newInputList) => {
@@ -115,7 +134,8 @@ const Dashboard = () => {
                 {showPopup && (
                     <div className="popup-overlay">
                         <div className="popup">
-                            <AddCard onInputListUpdate={handleInputListUpdate} onCancel={togglePopup} />
+                            <AddCard onInputListUpdate={handleInputListUpdate} onCancel={togglePopup} counter={counter}
+  updateCounter={updateCounter}/>
                         </div>
                     </div>
                 )}

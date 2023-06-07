@@ -1,7 +1,6 @@
 import { useState } from "react";
-import nextId from 'react-id-generator';
 
-const AddCard = ({ onInputListUpdate, onCancel }) => {
+const AddCard = ({ onInputListUpdate, onCancel, counter, updateCounter }) => {
 
   //set default status on hold
   const [input, setInput] = useState({
@@ -21,9 +20,10 @@ const AddCard = ({ onInputListUpdate, onCancel }) => {
   const submitHandler = (event) => {
     event.preventDefault();
 
-    const newInput = { ...input, id: nextId('PIP-') }
+    const newInput = { ...input, id: `PIP-${counter + 1}` };
     onInputListUpdate((prevInputList) => [...prevInputList, newInput]);
     setInput({ title: "", desc: "", status: "On Hold" });
+    updateCounter(counter + 1);
   };
 
   //discard changes
