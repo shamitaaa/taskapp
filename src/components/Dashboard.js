@@ -36,11 +36,6 @@ const Dashboard = () => {
         setViewTask(task);
     };
 
-    useEffect(() => {
-        localStorage.setItem('Counter', JSON.stringify(1))
-    }, [])
-    
-
     const handleInputListUpdate = (newInputList) => {
         setInputList(newInputList);
         setFilteredInputList(newInputList);
@@ -48,6 +43,7 @@ const Dashboard = () => {
 
     const updateTask = (updatedTask) => {
         const updatedTaskIndex = inputList.findIndex((task) => task.id === updatedTask.id);
+       
         if (updatedTaskIndex !== -1) {
             const updatedList = [...inputList];
             updatedList.splice(updatedTaskIndex, 1, updatedTask);
@@ -126,6 +122,7 @@ const Dashboard = () => {
                         </div>
                     </div>
                 )}
+
                 {showViewPopup && (
                     <div className="popup-overlay">
                         <div className="popup">
