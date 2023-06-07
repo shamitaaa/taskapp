@@ -1,15 +1,18 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const AddCard = ({ onInputListUpdate, onCancel }) => {
   const [input, setInput] = useState({
     status: "On Hold"
   });
 
-  const [counter, setCounter] = useState(1);
+  const Count = JSON.parse(localStorage.getItem('Counter'));
 
-//   const updateCounter = () => {
-//     setCounter(counter + 1)
-// };
+  const [counter, setCounter] = useState(Count || 1);
+
+  useEffect(() => {
+    localStorage.setItem('Counter', JSON.stringify(counter))
+  }, [counter])
+  
 
   const inputHandler = (event) => {
     const { name, value } = event.target;
@@ -24,7 +27,7 @@ const AddCard = ({ onInputListUpdate, onCancel }) => {
     const newInput = { ...input, id: `PIP-${counter}` };
     onInputListUpdate((prevInputList) => [...prevInputList, newInput]);
     setInput({ title: "", desc: "", status: "On Hold" });
-    setCounter((prevCounter) => prevCounter + 1);
+    setCounter(counter + 1);
 };
 
   const handleCancel = () => {

@@ -3,31 +3,7 @@ import React, { useState } from 'react';
 const EditTask = ({ task, onEdit, onCancel }) => {
   
   const [updatedTask, setUpdatedTask] = useState({ ...task });
-  const [newTitle, setNewTitle] = useState(task?.title);
-  const [newDesc, setNewDesc] = useState(task?.desc);
-  const [newStatus, setNewStatus] = useState(task?.status);
-
-  // const handleInputChange = event => {
-  //   const { name, value } = event.target;
-  //   if (name === 'title') {
-  //     setNewTitle(value);
-  //   } else if (name === 'desc') {
-  //     setNewDesc(value);
-  //   } else if (name === 'status') {
-  //     setNewStatus(value);
-  //   }
-  // };
-
-  // const saveChanges = () => {
-  //   const updatedTask = {
-  //     ...task,
-  //     title: newTitle,
-  //     desc: newDesc,
-  //     status: newStatus
-  //   };
-  //   onEdit(updatedTask);
-  // };
-
+  
   const handleInputChange = (e) => {
     
     setUpdatedTask({ ...updatedTask, [e.target.name]: e.target.value });
@@ -50,20 +26,17 @@ const EditTask = ({ task, onEdit, onCancel }) => {
         <input
           type="text"
           name="title"
-          value={newTitle}
           onChange={handleInputChange}
         />
         <label>Edit Description:</label>
         <input
           type="text"
           name="desc"
-          value={newDesc}
           onChange={handleInputChange}
         />
         <label>Edit State:</label>
         <select
           name="status"
-          value={newStatus}
           onChange={handleInputChange}
         >
           <option value="On Hold">On Hold</option>

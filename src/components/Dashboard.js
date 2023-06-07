@@ -37,6 +37,11 @@ const Dashboard = () => {
         setViewTask(task);
     };
 
+    useEffect(() => {
+        localStorage.setItem('Counter', JSON.stringify(1))
+    }, [])
+    
+
     const handleInputListUpdate = (newInputList) => {
         //dispatch(updateTaskEntries(newInputList));
         setInputList(newInputList);
@@ -98,9 +103,6 @@ const Dashboard = () => {
                 <Search onSearch={handleSearch} onCancel={handleCancelSearch} />
 
                 <div className="card-list">
-                    {/* {console.log("inputList:", inputList)}
-                    {console.log("filteredInputList:", filteredInputList)}
-                    {(searchTerm.trim() === "" ? inputList : filteredInputList).map((item) => ( */}
                     {Array.isArray(inputList) && (
                         (searchTerm.trim() === "" ? inputList : filteredInputList).map((item) => (
                             <div className="card" key={item.id}>
