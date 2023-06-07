@@ -43,7 +43,6 @@ const Dashboard = () => {
     
 
     const handleInputListUpdate = (newInputList) => {
-        //dispatch(updateTaskEntries(newInputList));
         setInputList(newInputList);
         setFilteredInputList(newInputList);
     };
@@ -81,10 +80,11 @@ const Dashboard = () => {
         setFilteredInputList([]);
     };
 
-    // const deleteTask = (id) => {
-    //     const updatedList = inputList.filter((task) => task.id !== id);
-    //     setInputList(updatedList);
-    // };
+    const deleteTask = (id) => {
+        const updatedList = inputList.filter((task) => task.id !== id);
+        setInputList(updatedList);
+        setFilteredInputList(updatedList);
+      };
 
     return (
         <>
@@ -111,7 +111,7 @@ const Dashboard = () => {
                                 <p>State: {item.status}</p>
 
                                 <div className="button-container">
-                                    <IconButton><DeleteIcon /></IconButton>
+                                    <IconButton onClick={() => deleteTask(item.id)}><DeleteIcon /></IconButton>
                                     <IconButton onClick={() => toggleEditPopup(item)}><EditIcon /></IconButton>
                                     <IconButton task={item} onClick={() => toggleViewPopup(item)}><VisibilityIcon /></IconButton>
                                 </div>
