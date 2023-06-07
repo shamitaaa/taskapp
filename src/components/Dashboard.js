@@ -8,7 +8,6 @@ import EditIcon from '@mui/icons-material/Edit';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import EditTask from "./EditTask";
 import ViewTask from "./ViewTask";
-//import Delete from "./Delete";
 import Search from "./Search";
 import '../index.css'
 
