@@ -14,16 +14,6 @@ const Dashboard = () => {
     //get inputlist or empty array and assign to initialstate variable.
     const initialState = JSON.parse(localStorage.getItem("inputList")) || [];
 
-    // const getCounterFromStorage = () => {
-    //     const counter = localStorage.getItem("counter");
-    //     return counter ? parseInt(counter) : 0;
-    //   };
-
-    //   const updateCounter = (newCounter) => {
-    //     localStorage.setItem("counter", newCounter.toString());
-    //     setCounter(newCounter);
-    //   };
-
     const [showPopup, setShowPopup] = useState(false);
     const [showEditPopup, setShowEditPopup] = useState(false);
     const [showViewPopup, setShowViewPopup] = useState(false);
@@ -32,10 +22,9 @@ const Dashboard = () => {
     const [inputList, setInputList] = useState(initialState);
     const [filteredInputList, setFilteredInputList] = useState([]);
     const [searchTerm, setSearchTerm] = useState("");
-    const [counter, setCounter] = useState(initialState.length);
 
     const updateCounter = (value) => {
-      setCounter(value);
+        setCounter(value);
     };
 
     //add task pop up
@@ -54,15 +43,23 @@ const Dashboard = () => {
         setShowViewPopup(!showViewPopup);
         setViewTask(task);
     };
-    
+
     //persist values in browser local storage. inputlist to JSON format
     useEffect(() => {
-      localStorage.setItem("inputList", JSON.stringify(inputList));
-    },) 
+        localStorage.setItem("inputList", JSON.stringify(inputList));
+    },)
 
-    
+    //take maxid from taskid use numericid to parse and take numeric value and return numericid as max if it is greater>max
+    const maxId = initialState.reduce((max, task) => {
+        const numericId = parseInt(task.id.split('-')[1]);
+        if (!isNaN(numericId) && numericId > max) {
+            return numericId;
+        }
+        return max;
+    }, 0);
 
-      
+    //pass maxid to counter
+    const [counter, setCounter] = useState(maxId);
 
     //used for search so that updated values will also show.
     const handleInputListUpdate = (newInputList) => {
@@ -74,7 +71,7 @@ const Dashboard = () => {
     //filterinputlist used for search to show updated values
     const updateTask = (updatedTask) => {
         const updatedTaskIndex = inputList.findIndex((task) => task.id === updatedTask.id);
-       
+
         if (updatedTaskIndex !== -1) {
             const updatedList = [...inputList];
             updatedList.splice(updatedTaskIndex, 1, updatedTask);
@@ -86,31 +83,31 @@ const Dashboard = () => {
     //used to find searchterm. filter tasks that include search term and set filtered list which will display relevant values.
     const handleSearch = (searchTerm) => {
         setSearchTerm(searchTerm);
-      
+
         if (searchTerm.trim() === "") {
-          setFilteredInputList(inputList);
-          return;
+            setFilteredInputList(inputList);
+            return;
         }
-      
+
         const filteredList = inputList.filter((task) => {
-          if (
-            task &&
-            task.id &&
-            task.title &&
-            task.desc &&
-            task.status &&
-            (task.id.includes(searchTerm) ||
-              task.title.includes(searchTerm) ||
-              task.desc.includes(searchTerm) ||
-              task.status.includes(searchTerm))
-          ) {
-            return true;
-          }
-          return false;
+            if (
+                task &&
+                task.id &&
+                task.title &&
+                task.desc &&
+                task.status &&
+                (task.id.includes(searchTerm) ||
+                    task.title.includes(searchTerm) ||
+                    task.desc.includes(searchTerm) ||
+                    task.status.includes(searchTerm))
+            ) {
+                return true;
+            }
+            return false;
         });
-      
+
         setFilteredInputList(filteredList);
-      }; 
+    };
 
     //cancel search and show all values. sets searchterm empty.
     const handleCancelSearch = () => {
@@ -123,19 +120,19 @@ const Dashboard = () => {
         const updatedList = inputList.filter((task) => task.id !== id);
         setInputList(updatedList);
         setFilteredInputList(updatedList);
-      };
+    };
 
     return (
         <>
             <div className="dashboard">
-                <h1>Dashboard</h1>
+                <h1>Task Dashboard</h1>
 
                 <button className="blue-button" onClick={togglePopup}>Add Task</button>
                 {showPopup && (
                     <div className="popup-overlay">
                         <div className="popup">
                             <AddCard onInputListUpdate={handleInputListUpdate} onCancel={togglePopup} counter={counter}
-  updateCounter={updateCounter}/>
+                                updateCounter={updateCounter} />
                         </div>
                     </div>
                 )}

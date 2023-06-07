@@ -1,4 +1,5 @@
 import { useState } from "react";
+import '../index.css';
 
 const AddCard = ({ onInputListUpdate, onCancel, counter, updateCounter }) => {
 
@@ -14,7 +15,7 @@ const AddCard = ({ onInputListUpdate, onCancel, counter, updateCounter }) => {
       ...prevInput,
       [name]: value,
     }));
-   }
+  }
 
   //called on submit. id generated here. insert newinput into prev list. resets initial to empty and on hold.
   const submitHandler = (event) => {
@@ -40,28 +41,33 @@ const AddCard = ({ onInputListUpdate, onCancel, counter, updateCounter }) => {
             Enter Title:
           </label>
           <input
+            required
             name="title"
             type="text"
             placeholder="Title"
+            maxLength={250}
             value={input.title || ""}
             onChange={inputHandler}
           />
-          {/* {errors.title && <p className="error">{errors.title}</p>} */}
+
           <label>
             Enter Description:
           </label>
-          <input
+          {/* <input
+            required
             name="desc"
             type="text"
             placeholder="Description"
+            maxLength={500}
             value={input.desc || ""}
             onChange={inputHandler}
-          />
-          {/* {errors.desc && <p className="error">{errors.desc}</p>} */}
+          /> */}
+          <textarea required name="desc" placeholder="Description" maxLength={500} value={input.desc || ""} onChange={inputHandler} rows="9" cols="70" />
+
           <label>
             Select State
           </label>
-          <select name="status" value={input.status} onChange={inputHandler}>
+          <select required name="status" value={input.status} onChange={inputHandler}>
             <option value="On Hold">On Hold</option>
             <option value="To Do">To Do</option>
             <option value="In Dev">In Dev</option>
@@ -70,7 +76,7 @@ const AddCard = ({ onInputListUpdate, onCancel, counter, updateCounter }) => {
             <option value="In QA">In QA</option>
             <option value="QA Done">QA Done</option>
           </select>
-          {/* {errors.status && <p className="error">{errors.status}</p>} */}
+
           <button type="submit">Create</button>
           <button type="button" onClick={handleCancel}>Cancel</button>
         </form>
