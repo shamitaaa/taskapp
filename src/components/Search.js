@@ -3,6 +3,7 @@ import { useState } from "react";
 const Search = ({ onSearch, onCancel }) => {
   const [searchTerm, setSearchTerm] = useState("");
 
+  //sets search term according to events value
   const handleInputChange = (event) => {
     setSearchTerm(event.target.value);
   };

@@ -1,5 +1,3 @@
-import { useDispatch, useSelector } from "react-redux";
-import { updateTaskEntries } from "../store/Actions";
 import { useState, useEffect } from "react";
 import AddCard from "./AddData";
 import { IconButton } from '@mui/material';
@@ -13,34 +11,48 @@ import '../index.css'
 
 const Dashboard = () => {
 
+    //get inputlist or empty array and assign to initialstate variable.
+    const initialState = JSON.parse(localStorage.getItem("inputList")) || [];
+
     const [showPopup, setShowPopup] = useState(false);
     const [showEditPopup, setShowEditPopup] = useState(false);
     const [showViewPopup, setShowViewPopup] = useState(false);
     const [viewTask, setViewTask] = useState(null);
     const [selectedTask, setSelectedTask] = useState(null);
-    const [inputList, setInputList] = useState([]);
+    const [inputList, setInputList] = useState(initialState);
     const [filteredInputList, setFilteredInputList] = useState([]);
     const [searchTerm, setSearchTerm] = useState("");
 
+    //add task pop up
     const togglePopup = () => {
         setShowPopup(!showPopup);
     };
 
+    //edit task pop up. sets value to task
     const toggleEditPopup = (task) => {
         setSelectedTask(task);
         setShowEditPopup(!showEditPopup);
     };
 
+    //view task pop up. sets viewtask with task so later we can call viewtask as task cant be used
     const toggleViewPopup = (task) => {
         setShowViewPopup(!showViewPopup);
         setViewTask(task);
     };
+    
+    //persist values in browser local storage. inputlist to JSON format
+    useEffect(() => {
+      localStorage.setItem("inputList", JSON.stringify(inputList));
+    },) 
 
+    //used for search so that updated values will also show.
     const handleInputListUpdate = (newInputList) => {
         setInputList(newInputList);
         setFilteredInputList(newInputList);
     };
 
+    //used with edit task. take updatedtask and set it to task with same id. delete original insert new into updatedlist
+    //filterinputlist used for search to show updated values
     const updateTask = (updatedTask) => {
         const updatedTaskIndex = inputList.findIndex((task) => task.id === updatedTask.id);
        
@@ -52,29 +64,42 @@ const Dashboard = () => {
         }
     };
 
+    //used to find searchterm. filter tasks that include search term and set filtered list which will display relevant values.
     const handleSearch = (searchTerm) => {
         setSearchTerm(searchTerm);
-
+      
         if (searchTerm.trim() === "") {
-            setFilteredInputList([]);
-            return;
+          setFilteredInputList(inputList);
+          return;
         }
-
-        const filteredList = inputList.filter(
-            (task) =>
-                task.id.includes(searchTerm) ||
-                task.title.includes(searchTerm) ||
-                task.desc.includes(searchTerm) ||
-                task.status.includes(searchTerm)
-        );
+      
+        const filteredList = inputList.filter((task) => {
+          if (
+            task &&
+            task.id &&
+            task.title &&
+            task.desc &&
+            task.status &&
+            (task.id.includes(searchTerm) ||
+              task.title.includes(searchTerm) ||
+              task.desc.includes(searchTerm) ||
+              task.status.includes(searchTerm))
+          ) {
+            return true;
+          }
+          return false;
+        });
+      
         setFilteredInputList(filteredList);
-    };
+      }; 
 
+    //cancel search and show all values. sets searchterm empty.
     const handleCancelSearch = () => {
         setSearchTerm("");
         setFilteredInputList([]);
     };
 
+    //delete functionality. take task id, filter and give all values not equal to it
     const deleteTask = (id) => {
         const updatedList = inputList.filter((task) => task.id !== id);
         setInputList(updatedList);

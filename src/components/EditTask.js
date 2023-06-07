@@ -4,11 +4,12 @@ const EditTask = ({ task, onEdit, onCancel }) => {
   
   const [updatedTask, setUpdatedTask] = useState({ ...task });
   
+  //sets updated task with event
   const handleInputChange = (e) => {
-    
     setUpdatedTask({ ...updatedTask, [e.target.name]: e.target.value });
   };
 
+  //saves values and passes updatedtask to onedit to be used on dashboard
   const handleSave = () => {
     onEdit(updatedTask); 
     onCancel(); 

@@ -1,6 +1,8 @@
 import React from "react";
 
 const ViewTask = ({ task, onCancel }) => {
+
+  //shows values corresponding to the task. task used on dashboard
   return (
     <div className="view-task">
       <h1>View Task</h1>
